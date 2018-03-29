@@ -448,9 +448,9 @@ module.exports = function memoryStore(baseConnection){
 		 *   `props`'s [can-connect/base/base.id]. Finally removes this from the instance store.
 		 */
 		destroyData: function(props){
-
+			var id = this.algebra.id(props);
 			if(this.errorOnMissingRecord && !this.getInstanceFromProps(props)) {
-				var id = this.algebra.id(props);
+
 				return Promise.reject({
 					title: "no data",
 					status: "404",
@@ -471,7 +471,6 @@ module.exports = function memoryStore(baseConnection){
 					self.updateSet(setDatum, items);
 				}
 			});
-			var id = this.algebra.id(props);
 			delete this._instances[id];
 			return Promise.resolve(canReflect.assignMap({},props));
 		}

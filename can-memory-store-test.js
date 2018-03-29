@@ -356,7 +356,7 @@ QUnit.asyncTest("pagination loses the bigger set (#126)", function(){
 			QUnit.ok(false, "no data");
 			QUnit.start();
 		});
-	}).catch(function(e){
+	}).catch(function(){
 		QUnit.ok(false, "something broke");
 		QUnit.start();
 	});
@@ -382,7 +382,7 @@ QUnit.asyncTest("pagination loses the bigger set (#128)", function(){
 	}).then(function(listData){
 		QUnit.deepEqual(listData, { data: [{id: 1},{id: 2}], count: 4 });
 		QUnit.start();
-	}).catch(function(e){
+	}).catch(function(){
 		QUnit.ok(false, "something broke");
 		QUnit.start();
 	});
@@ -403,7 +403,7 @@ QUnit.test("should not mutate data passed from the outside", function(assert) {
 	];
 
 	connection.updateListData({ data: items }, {})
-	.then(function(listData) {
+	.then(function() {
 		return connection.updateListData({
 			data: [
 				{ "id": 1, role: "nurse" },
@@ -444,7 +444,7 @@ QUnit.test("count is right with filtering", function(assert) {
 	];
 
 	connection.updateListData({ data: items }, {})
-	.then(function(listData) {
+	.then(function() {
 		return connection.getListData({
 			filter: {role: "a"},
 			page: {start: 0, end: 1}
@@ -454,7 +454,7 @@ QUnit.test("count is right with filtering", function(assert) {
 		QUnit.deepEqual(result, {
 			data: [{ "id": 1, role: "a" },{ "id": 3, role: "a" }],
 			count: 3
-		})
+		});
 		done();
 	})
 	.then(null, function(error) {
