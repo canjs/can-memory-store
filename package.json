@@ -24,51 +24,24 @@
     "build": "node build.js",
     "develop": "done-serve --static --develop --port 8080"
   },
-  "main": "dist/cjs/can-memory-store",
-  "browser": {
-    "transform": [
-      "cssify"
-    ]
-  },
-  "browserify": {
-    "transform": [
-      "cssify"
-    ]
-  },
+  "main": "can-memory-store",
   "keywords": [
     "DoneJS",
     "donejs-plugin"
   ],
-  "steal": {
-    "main": "can-memory-store",
-    "configDependencies": [
-      "live-reload"
-    ],
-    "npmIgnore": [
-      "testee",
-      "generator-donejs",
-      "donejs-cli",
-      "steal-tools"
-    ],
-    "plugins": [
-      "steal-less",
-      "steal-stache"
-    ]
-  },
   "dependencies": {
-    "can-query": "<2.0.0",
+    "can-diff": "<2.0.0",
+    "can-query-logic": "<2.0.0",
     "can-reflect": "^1.13.4",
     "can-sort-object": "^1.0.1"
   },
   "devDependencies": {
+    "can-set-legacy": "<2.0.0",
     "jshint": "^2.9.1",
     "steal": "^1.6.5",
     "steal-qunit": "^1.0.1",
     "steal-tools": "^1.11.3",
-    "testee": "^0.7.0",
-    "generator-donejs": "^2.1.0",
-    "donejs-cli": "^2.0.0",
-    "done-serve": "^2.0.0"
+    "testee": "^0.7.0"
   },
   "license": "MIT"
 }

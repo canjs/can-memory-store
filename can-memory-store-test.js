@@ -1,7 +1,7 @@
 var QUnit = require("steal-qunit");
 var memoryStore = require("./can-memory-store");
-var canSet = require("can-query/compat/compat");
-var Query = require("can-query");
+var canSet = require("can-set-legacy");
+var QueryLogic = require("can-query-logic");
 
 var logErrorAndStart = function(e){
 	ok(false,"Error "+e);
@@ -14,7 +14,7 @@ var aItems = [{id: 10, name: "A"},{id: 11, name: "A"},{id: 12, name: "A"}];
 QUnit.module("can-memory-store",{
 	setup: function(){
 		this.connection = memoryStore({
-            algebra: new canSet.Algebra()
+            queryLogic: new canSet.Algebra()
         });
 		this.connection.clear();
 	}
@@ -295,7 +295,7 @@ QUnit.test("respect sort order (#80)", function(){
 	stop();
 
 	var connection = memoryStore({
-		algebra: new canSet.Algebra(canSet.props.sort("sortBy"))
+		queryLogic: new canSet.Algebra(canSet.props.sort("sortBy"))
 	});
 
 	connection.updateListData({ data: items.slice(0) }, {})
@@ -315,7 +315,7 @@ QUnit.test("non numeric ids (#79)", function(){
 
 	stop();
 
-	var connection = memoryStore({algebra: new canSet.Algebra()});
+	var connection = memoryStore({queryLogic: new canSet.Algebra()});
 
 	// add data tot he store, remove an item, make sure it's gone
 	connection.updateListData({ data: items.slice(0) }, {})
@@ -338,7 +338,7 @@ QUnit.asyncTest("pagination loses the bigger set (#126)", function(){
 
 	var connection = memoryStore({
 		name: "todos",
-		algebra: todosAlgebra
+		queryLogic: todosAlgebra
 	});
 
 	connection.updateListData(
@@ -371,7 +371,7 @@ QUnit.asyncTest("pagination loses the bigger set (#128)", function(){
 
 	var connection = memoryStore({
 		name: "todos",
-		algebra: todosAlgebra
+		queryLogic: todosAlgebra
 	});
 
 	connection.updateListData(
@@ -428,7 +428,7 @@ QUnit.test("should not mutate data passed from the outside", function(assert) {
 QUnit.test("count is right with filtering", function(assert) {
 	var done = assert.async();
 	var connection =  memoryStore({
-		algebra: new Query({})
+		queryLogic: new QueryLogic({})
 	});
 	connection.clear();
 

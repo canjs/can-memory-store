@@ -44,9 +44,8 @@
  */
 var canReflect = require("can-reflect");
 var sortObject = require("can-sort-object");
-var updateExceptId = require("can-query/helpers/update-except-id");
-var setAdd = require("can-query/helpers/insert");
-var indexOf = require("can-query/helpers/index-by-id");
+var updateExceptId = require("can-diff/update-deep-except-identity/update-deep-except-identity");
+var indexOf = require("can-diff/index-by-identity/index-by-identity");
 
 
 function getItems(data){
@@ -79,7 +78,7 @@ module.exports = function memoryStore(baseConnection){
 			return this._instances[id];
 		},
 		getInstanceFromProps: function(props) {
-			var id = this.algebra.id(props);
+			var id = canReflect.getIdentity(props, this.queryLogic.schema);
 			return this.getInstance(id);
 		},
 		removeSet: function(setKey, noUpdate) {
@@ -94,9 +93,9 @@ module.exports = function memoryStore(baseConnection){
 		updateInstance: function(props) {
 			var instance = this.getInstanceFromProps(props);
 			if(instance) {
-				updateExceptId(this.algebra, instance, props);
+				updateExceptId(instance, props, this.queryLogic.schema);
 			} else {
-				var id = this.algebra.id(props);
+				var id = canReflect.getIdentity(props, this.queryLogic.schema);
 				instance = this._instances[id] = props;
 			}
 			return instance;
@@ -239,7 +238,7 @@ module.exports = function memoryStore(baseConnection){
 		 * @signature `connection.getListData(set)`
 		 *
 		 *   Goes through each set add by [can-connect/data/memory-cache/memory-cache.updateListData]. If
-		 *   `set` is a subset, uses [can-connect/base/base.algebra] to get the data for the requested `set`.
+		 *   `set` is a subset, uses [can-connect/base/base.queryLogic] to get the data for the requested `set`.
 		 *
 		 *   @param {can-set/Set} set An object that represents the data to load.
 		 *
@@ -275,9 +274,9 @@ module.exports = function memoryStore(baseConnection){
 			for(var i = 0; i < sets.length; i++) {
 				var checkSet = sets[i];
 
-				if( this.algebra.subset(set, checkSet) ) {
+				if( this.queryLogic.isSubset(set, checkSet) ) {
 					var source = this.__getListData(checkSet);
-					return this.algebra.getMembersAndCountFrom(set, checkSet, source);
+					return this.queryLogic.filterMembersAndGetCount(set, checkSet, source);
 				}
 			}
 		},
@@ -310,13 +309,13 @@ module.exports = function memoryStore(baseConnection){
 
 			for(var setKey in sets) {
 				var setDatum = sets[setKey];
-				var union = this.algebra.union(setDatum.set, set);
-				if( this.algebra.isDefinedAndHasMembers(union) ) {
+				var union = this.queryLogic.union(setDatum.set, set);
+				if( this.queryLogic.isDefinedAndHasMembers(union) ) {
 					// copies so we don't pass the same set object
 					var getSet = canReflect.assignMap({},setDatum.set);
 					return this.getListData(getSet).then(function(setData){
 
-						self.updateSet(setDatum, self.algebra.getUnion(getSet, set, getItems(setData), items ), union);
+						self.updateSet(setDatum, self.queryLogic.unionMembers(getSet, set, getItems(setData), items ), union);
 					});
 				}
 			}
@@ -343,7 +342,7 @@ module.exports = function memoryStore(baseConnection){
 		 *   If the memory cache does not have this item, it rejects the promise.
 		 */
 		getData: function(params){
-			var id = this.algebra.id(params);
+			var id = canReflect.getIdentity(params, canReflect.getSchema( this.queryLogic ) );
 			var res = this.getInstance(id);
 			if(res){
 				return Promise.resolve( res );
@@ -374,8 +373,8 @@ module.exports = function memoryStore(baseConnection){
 			var instance = this.updateInstance(props);
 
 			this._eachSet(function(setDatum, setKey, getItems){
-				if(this.algebra.has(setDatum.set, instance )) {
-					self.updateSet(setDatum, setAdd(self.algebra, setDatum.set,  getItems(), instance), setDatum.set);
+				if(this.queryLogic.isMember(setDatum.set, instance )) {
+					self.updateSet(setDatum, self.queryLogic.insert( setDatum.set,  getItems(), instance), setDatum.set);
 				}
 			});
 
@@ -397,7 +396,7 @@ module.exports = function memoryStore(baseConnection){
 			var self = this;
 
 			if(this.errorOnMissingRecord && !this.getInstanceFromProps(props)) {
-				var id = this.algebra.id(props);
+				var id = canReflect.getIdentity(props, this.queryLogic.schema);
 				return Promise.reject({
 					title: "no data",
 					status: "404",
@@ -410,15 +409,15 @@ module.exports = function memoryStore(baseConnection){
 			this._eachSet(function(setDatum, setKey, getItems){
 				// if props belongs
 				var items = getItems();
-				var index = indexOf(self.algebra, instance, items);
+				var index = indexOf(items, instance, self.queryLogic.schema );
 
-				if( this.algebra.subset(instance, setDatum.set) ) {
+				if( this.queryLogic.isSubset(instance, setDatum.set) ) {
 
 					// if it's not in, add it
 					if(index === -1) {
 						// how to insert things together?
 
-						self.updateSet(setDatum, setAdd(self.algebra, setDatum.set,  getItems(), instance, self.algebra) );
+						self.updateSet(setDatum, self.queryLogic.insert( setDatum.set,  getItems(), instance ) );
 					} else {
 						// otherwise add it
 						items.splice(index,1, instance);
@@ -448,7 +447,7 @@ module.exports = function memoryStore(baseConnection){
 		 *   `props`'s [can-connect/base/base.id]. Finally removes this from the instance store.
 		 */
 		destroyData: function(props){
-			var id = this.algebra.id(props);
+			var id = canReflect.getIdentity(props,  this.queryLogic.schema);
 			if(this.errorOnMissingRecord && !this.getInstanceFromProps(props)) {
 
 				return Promise.reject({
@@ -463,7 +462,7 @@ module.exports = function memoryStore(baseConnection){
 			this._eachSet(function(setDatum, setKey, getItems){
 				// if props belongs
 				var items = getItems();
-				var index = indexOf(self.algebra, props, items);
+				var index = indexOf( items, props, self.queryLogic.schema );
 
 				if(index !== -1){
 					// otherwise remove it
