@@ -10,7 +10,7 @@ function getItems(data){
 }
 
 function indexOf(records, identity, queryLogic ){
-	var schema = canReflect.getSchema( queryLogic )
+	var schema = canReflect.getSchema( queryLogic );
 	for(var i = 0 ; i < records.length; i++) {
 		if(identity === canReflect.getIdentity(records[i],  schema) ) {
 			return i;
@@ -46,7 +46,7 @@ function makeSimpleStore(baseConnection) {
 		getQueriesSync: function(){
 			return this.getQueryDataSync().map(function(queryData){
 				return queryData.query;
-			})
+			});
 		},
 
         getListData: function(query){
@@ -102,7 +102,7 @@ function makeSimpleStore(baseConnection) {
         },
 
         updateListData: function(data, query){
-			var queryData = this.getQueryDataSync()
+			var queryData = this.getQueryDataSync();
         	query = query || {};
             var clonedData = canReflect.serialize(data);
         	var records = getItems(clonedData);
@@ -116,7 +116,7 @@ function makeSimpleStore(baseConnection) {
 	        		var checkSet = queryData[i].query;
 					var union = this.queryLogic.union(checkSet, query);
 					if( this.queryLogic.isDefinedAndHasMembers(union)  ) {
-						var siblingRecords = this.getPaginatedListDataSync(queryData[i])
+						var siblingRecords = this.getPaginatedListDataSync(queryData[i]);
 						var res = this.queryLogic.unionMembers(checkSet, query, siblingRecords.data, records );
 						identity = canReflect.getIdentity(res[0],  this.queryLogic.schema);
 						queryData[i] = {

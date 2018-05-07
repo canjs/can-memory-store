@@ -485,7 +485,7 @@ QUnit.test("will union paginated records", function(){
 		QUnit.deepEqual(data,{
 			data: [{id: "a"}, {id: "b"}, {id: "c"}, {id: "d"}, {id: "e"}],
 			count: 5
-		})
+		});
 		QUnit.start();
 	});
 });
