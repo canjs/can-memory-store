@@ -28,9 +28,9 @@ function makeSimpleStore(baseConnection) {
     // queries: {[queryKey]: {queryKey, query, recordIds}}
     // records
     return canReflect.assignMap(behavior, {
-        getInstanceFromProps: function(record) {
+        getRecordFromParams: function(record) {
         	var id = canReflect.getIdentity(record, this.queryLogic.schema);
-        	return this.getInstance(id);
+        	return this.getRecord(id);
         },
 
         log: function(){
@@ -201,7 +201,7 @@ function makeSimpleStore(baseConnection) {
 
 		updateData: function(record){
 
-			if(this.errorOnMissingRecord && !this.getInstanceFromProps(record)) {
+			if(this.errorOnMissingRecord && !this.getRecordFromParams(record)) {
 				var id = canReflect.getIdentity(record, this.queryLogic.schema);
 				return Promise.reject({
 					title: "no data",
@@ -217,7 +217,7 @@ function makeSimpleStore(baseConnection) {
 
 		destroyData: function(record){
 			var id = canReflect.getIdentity(record,  this.queryLogic.schema);
-			if(this.errorOnMissingRecord && !this.getInstanceFromProps(record)) {
+			if(this.errorOnMissingRecord && !this.getRecordFromParams(record)) {
 
 				return Promise.reject({
 					title: "no data",
