@@ -511,7 +511,7 @@ QUnit.test("create, update, destroy all return data", function(){
 		QUnit.deepEqual(data, { id: 3, name: "foo" }, "destroyData");
 
 		return QUnit.start();
-	})
+	});
 });
 
 
