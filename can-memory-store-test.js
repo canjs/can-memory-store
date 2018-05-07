@@ -6,6 +6,9 @@ var QueryLogic = require("can-query-logic");
 var logErrorAndStart = function(e){
 	ok(false,"Error "+e);
 	start();
+	setTimeout(function(){
+		throw e;
+	},1)
 };
 
 var items = [{id: 1, foo:"bar"},{id: 2, foo:"bar"},{id: 3, foo:"bar"}];
@@ -356,10 +359,7 @@ QUnit.asyncTest("pagination loses the bigger set (#126)", function(){
 			QUnit.ok(false, "no data");
 			QUnit.start();
 		});
-	}).catch(function(){
-		QUnit.ok(false, "something broke");
-		QUnit.start();
-	});
+	}).catch(logErrorAndStart);
 
 
 });
