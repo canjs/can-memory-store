@@ -1,5 +1,4 @@
 var canReflect = require("can-reflect");
-var sortObject = require("can-sort-object");
 
 
 var makeSimpleStore = require("./make-simple-store");
@@ -45,28 +44,6 @@ module.exports = function memoryStore(baseConnection){
 				this._instances[id] = record;
 			},this);
 		},
-
-
-		/*
-		addSet: function(query, data) {
-			var items = getItems(data);
-			var queries = this.getQueryData();
-			var setKey = JSON.stringify(sortObject(query));
-
-			queries[setKey] = {
-				setKey: setKey,
-				items: items,
-				query: canReflect.assignMap({},query)
-			};
-
-			var self = this;
-
-			items.forEach(function(item){
-				self.updateInstance(item);
-			});
-			this.updateQuerys();
-		},*/
-
 
 		// ## External interface
 

@@ -8,7 +8,7 @@ var logErrorAndStart = function(e){
 	start();
 	setTimeout(function(){
 		throw e;
-	},1)
+	},1);
 };
 
 var items = [{id: 1, foo:"bar"},{id: 2, foo:"bar"},{id: 3, foo:"bar"}];

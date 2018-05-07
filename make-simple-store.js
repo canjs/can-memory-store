@@ -60,7 +60,7 @@ function makeSimpleStore(baseConnection) {
         		var checkSet = queries[i];
         		if( this.queryLogic.isSubset(query, checkSet) ) {
 
-        			return {count: 0, data: []}
+        			return {count: 0, data: []};
         		}
         	}
         },
