@@ -194,9 +194,9 @@ function makeSimpleStore(baseConnection) {
         	}
         },
         createData: function(record){
-			var instance = this.updateRecordsSync([record]);
+			this.updateRecordsSync([record]);
 
-			return Promise.resolve(canReflect.assignMap({},instance));
+			return Promise.resolve(canReflect.assignMap({}, this.getRecordFromParams(record) ));
 		},
 
 		updateData: function(record){
@@ -210,9 +210,9 @@ function makeSimpleStore(baseConnection) {
 				});
 			}
 
-			var instance = this.updateRecordsSync([record]);
+			this.updateRecordsSync([record]);
 
-			return Promise.resolve(canReflect.assignMap({},instance));
+			return Promise.resolve(canReflect.assignMap({},this.getRecordFromParams(record) ));
 		},
 
 		destroyData: function(record){
