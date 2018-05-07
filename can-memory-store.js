@@ -13,12 +13,12 @@ module.exports = function memoryStore(baseConnection){
 			this._instances = {};
 			this._queries = [];
 		},
-		_queries: [],
-		updateQueriesSync: function(queries){
-			this._queries = queries;
+		_queryData: [],
+		updateQueryDataSync: function(queries){
+			this._queryData = queries;
 		},
-		getQueriesSync: function(){
-			return this._queries;
+		getQueryDataSync: function(){
+			return this._queryData;
 		},
 
 		_instances: {},

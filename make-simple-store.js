@@ -8,6 +8,17 @@ function getItems(data){
 		return data.data;
 	}
 }
+
+function indexOf(records, identity, queryLogic ){
+	var schema = canReflect.getSchema( queryLogic )
+	for(var i = 0 ; i < records.length; i++) {
+		if(identity === canReflect.getIdentity(records[i],  schema) ) {
+			return i;
+		}
+	}
+	return -1;
+}
+
 // update could remove all other records that would be in the set
 function makeSimpleStore(baseConnection) {
     baseConnection.constructor = makeSimpleStore;
@@ -32,6 +43,11 @@ function makeSimpleStore(baseConnection) {
 		getQueries: function(){
 			return Promise.resolve(this.getQueriesSync());
 		},
+		getQueriesSync: function(){
+			return this.getQueryDataSync().map(function(queryData){
+				return queryData.query;
+			})
+		},
 
         getListData: function(query){
         	query = query || {};
@@ -46,29 +62,79 @@ function makeSimpleStore(baseConnection) {
         			JSON.stringify(this.getQueriesSync())
         	});
         },
-
+		getPaginatedListDataSync: function(superSetQueryData) {
+			var records = this.getAllRecords();
+			var queryWithoutPagination = this.queryLogic.removePagination(superSetQueryData.query);
+			var matchingSuperRecordsNoPagination = this.queryLogic.filterMembersAndGetCount(queryWithoutPagination, {}, records);
+			var startIndex = indexOf(matchingSuperRecordsNoPagination.data, superSetQueryData.startIdentity, this.queryLogic);
+			var matchingSuperRecords = matchingSuperRecordsNoPagination.data.slice(startIndex, startIndex+ this.queryLogic.count(superSetQueryData.query));
+			return {
+				count: matchingSuperRecordsNoPagination.data.length,
+				data: matchingSuperRecords
+			};
+		},
         getListDataSync: function(query){
-            // first check data
-            var records = this.getAllRecords();
+			var queryData = this.getQueryDataSync(),
+				superSetQueryData,
+				isPaginated = this.queryLogic.isPaginated(query);
+
+			for(var i = 0; i < queryData.length; i++) {
+        		var checkSet = queryData[i].query;
+        		if( this.queryLogic.isSubset(query, checkSet) ) {
+					superSetQueryData = queryData[i];
+        		}
+        	}
+			var records = this.getAllRecords();
+
+			if(isPaginated && this.queryLogic.isPaginated(superSetQueryData.query) ) {
+				var result = this.getPaginatedListDataSync(superSetQueryData);
+				return this.queryLogic.filterMembersAndGetCount(query, superSetQueryData.query, result.data);
+			}
+
             var matching = this.queryLogic.filterMembersAndGetCount(query, {}, records);
             if(matching && matching.count) {
                 return matching;
             }
             // now check if we have a query  for it
-        	var queries = this.getQueriesSync();
-        	for(var i = 0; i < queries.length; i++) {
-        		var checkSet = queries[i];
-        		if( this.queryLogic.isSubset(query, checkSet) ) {
-
-        			return {count: 0, data: []};
-        		}
-        	}
+        	if(superSetQueryData) {
+				return {count: 0, data: []};
+			}
         },
 
         updateListData: function(data, query){
+			var queryData = this.getQueryDataSync()
         	query = query || {};
             var clonedData = canReflect.serialize(data);
         	var records = getItems(clonedData);
+			// Update or create all records
+			this.updateRecordsSync(records);
+			var isPaginated = this.queryLogic.isPaginated(query);
+			var identity = records.length ? canReflect.getIdentity(records[0],  this.queryLogic.schema) : undefined;
+			if(isPaginated) {
+				// we are going to merge with some paginated set
+				for(var i = 0; i < queryData.length; i++) {
+	        		var checkSet = queryData[i].query;
+					var union = this.queryLogic.union(checkSet, query);
+					if( this.queryLogic.isDefinedAndHasMembers(union)  ) {
+						var siblingRecords = this.getPaginatedListDataSync(queryData[i])
+						var res = this.queryLogic.unionMembers(checkSet, query, siblingRecords.data, records );
+						identity = canReflect.getIdentity(res[0],  this.queryLogic.schema);
+						queryData[i] = {
+							query: union,
+							startIdentity: identity
+						};
+						this.updateQueryDataSync(queryData);
+						return Promise.resolve();
+					}
+	        	}
+
+				queryData.push({
+					query: query,
+					startIdentity: identity
+				});
+				this.updateQueryDataSync(queryData);
+				return Promise.resolve();
+			}
 
             // we need to remove everything that would have matched this query before, but that's not in data
             // but what if it's in another set -> we remove it
@@ -87,26 +153,27 @@ function makeSimpleStore(baseConnection) {
 
                 this.destroyRecords( canReflect.toArray(toBeDeleted.values() ) );
             }
-            // Update or create all records
-            this.updateRecordsSync(records);
-            //records.forEach(this.updateRecord.bind(this));
-
-            // Update the list of sets that are being saved
 
             // the queries that are not consumed by query
-            var allQueries = this.getQueriesSync();
-            var notSubsets = allQueries.filter(function(existingQuery){
-                    return !this.queryLogic.isSubset(existingQuery, query);
+            var allQueries = this.getQueryDataSync();
+            var notSubsets = allQueries.filter(function(existingQueryData){
+                    return !this.queryLogic.isSubset(existingQueryData.query, query);
                 }, this),
-                superSets = notSubsets.filter(function(existingQuery){
-                    return this.queryLogic.isSubset(query, existingQuery);
+                superSets = notSubsets.filter(function(existingQueryData){
+                    return this.queryLogic.isSubset(query, existingQueryData.query);
                 }, this);
+
+			// would need to note the first record ... so we can do a query w/o pagination
+			//
 
             // if there are sets that are parents of query
             if(superSets.length) {
-                this.updateQueriesSync(notSubsets);
+                this.updateQueryDataSync(notSubsets);
             } else {
-                this.updateQueriesSync(notSubsets.concat([query]));
+                this.updateQueryDataSync(notSubsets.concat([{
+					query: query,
+					startIdentity:identity
+				}]));
             }
 
         	// setData.push({query: query, items: data});

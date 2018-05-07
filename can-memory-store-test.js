@@ -462,5 +462,33 @@ QUnit.test("count is right with filtering", function(assert) {
 	});
 });
 
+QUnit.test("will union paginated records", function(){
+	var connection =  memoryStore({
+		queryLogic: new QueryLogic({})
+	});
+	QUnit.stop();
+	connection.updateListData({
+		data: [{id: "a"}, {id: "b"}, {id: "c"}]
+	}, {
+		page: {start: 1, end: 3}
+	}).then(function(){
+		return connection.updateListData({
+			data: [{id: "d"}, {id: "e"}]
+		}, {
+			page: {start: 4, end: 5}
+		});
+	}).then(function(){
+		return connection.getListData({
+			page: {start: 1, end: 5}
+		});
+	}).then(function(data){
+		QUnit.deepEqual(data,{
+			data: [{id: "a"}, {id: "b"}, {id: "c"}, {id: "d"}, {id: "e"}],
+			count: 5
+		})
+		QUnit.start();
+	});
+});
+
 
 // TODO: make sure we get the right count
