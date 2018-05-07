@@ -1,6 +1,6 @@
 {
   "name": "can-memory-store",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "A memory store with mongo-db like queries",
   "homepage": "http://canjs.com",
   "repository": {
