@@ -1,10 +1,10 @@
 var canReflect = require("can-reflect");
-
+var namespace = require("can-namespace");
 
 var makeSimpleStore = require("./make-simple-store");
 
 
-module.exports = function memoryStore(baseConnection){
+module.exports = namespace.memoryStore = function memoryStore(baseConnection){
     baseConnection.constructor = memoryStore;
     var behavior = Object.create(makeSimpleStore(baseConnection));
 
