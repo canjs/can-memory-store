@@ -216,8 +216,10 @@ function makeSimpleStore(baseConnection) {
 		},
 
 		destroyData: function(record){
-			var id = canReflect.getIdentity(record,  this.queryLogic.schema);
-			if(this.errorOnMissingRecord && !this.getRecordFromParams(record)) {
+			var id = canReflect.getIdentity(record,  this.queryLogic.schema),
+				savedRecord = this.getRecordFromParams(record);
+
+			if(this.errorOnMissingRecord && !savedRecord) {
 
 				return Promise.reject({
 					title: "no data",
@@ -226,7 +228,7 @@ function makeSimpleStore(baseConnection) {
 				});
 			}
             this.destroyRecords([record]);
-			return Promise.resolve(canReflect.assignMap({},record));
+			return Promise.resolve(canReflect.assignMap({},savedRecord || record));
 		}
     });
 }

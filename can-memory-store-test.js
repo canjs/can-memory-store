@@ -514,5 +514,29 @@ QUnit.test("create, update, destroy all return data", function(){
 	});
 });
 
+QUnit.test("create, update, destroy all return saved data", function(){
+	var store =  memoryStore({
+		queryLogic: new QueryLogic({})
+	});
+
+	QUnit.stop();
+
+	store.createData({
+		id: 1, name: "foo"
+	}).then(function(data){
+		QUnit.deepEqual(data, { id: 1, name: "foo" }, "create");
+
+		return store.updateData({ id: 2, name: "foo" });
+	}).then(function(data){
+		QUnit.deepEqual(data, { id: 2, name: "foo" }, "updateData");
+
+		return store.destroyData({ id: 3, name: "foo" });
+	}).then(function(data){
+		QUnit.deepEqual(data, { id: 3, name: "foo" }, "destroyData");
+
+		return QUnit.start();
+	});
+});
+
 
 // TODO: make sure we get the right count
