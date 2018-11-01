@@ -151,7 +151,7 @@ function makeSimpleStore(baseConnection) {
                     toBeDeleted.delete( canReflect.getIdentity(record, this.queryLogic.schema) );
                 }, this);
 
-                this.destroyRecords( canReflect.toArray(toBeDeleted.values() ) );
+                this.destroyRecords( canReflect.toArray(toBeDeleted) );
             }
 
             // the queries that are not consumed by query
