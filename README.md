@@ -5,8 +5,6 @@
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/canjs/can-memory-store/blob/master/LICENSE)
 [![npm version](https://badge.fury.io/js/can-memory-store.svg)](https://www.npmjs.com/package/can-memory-store)
 [![Travis build status](https://travis-ci.org/canjs/can-memory-store.svg?branch=master)](https://travis-ci.org/canjs/can-memory-store)
-[![AppVeyor build status](https://ci.appveyor.com/api/projects/status/github/canjs/can-memory-store?branch=master&svg=true)](https://ci.appveyor.com/project/matthewp/can-memory-store)
-[![Coverage status](https://coveralls.io/repos/github/canjs/can-memory-store/badge.svg?branch=master)](https://coveralls.io/github/canjs/can-memory-store?branch=master)
 [![Greenkeeper badge](https://badges.greenkeeper.io/canjs/can-memory-store.svg)](https://greenkeeper.io/)
 
 A memory store with mongo-db like queries
