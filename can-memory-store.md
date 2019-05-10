@@ -2,6 +2,7 @@
 @parent can-data-modeling
 @collection can-infrastructure
 @group can-memory-store.data-methods data methods
+@package ./package.json
 
 Create, update, delete and query data saved in memory.
 
