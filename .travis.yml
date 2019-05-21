@@ -1,6 +1,12 @@
 language: node_js
 node_js: node
 addons:
-  firefox: "latest"
+  firefox: "latest-esr"
+  # Install D-Bus here
+  apt:
+    packages:
+      - "dbus-x11"
 services:
   - xvfb
+before_script:
+  - "export DISPLAY=:0.0 xvfb-run --auto-servernum --server-num=0 nohup java - jar X.jar"
