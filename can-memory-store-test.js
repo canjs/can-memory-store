@@ -25,127 +25,127 @@ QUnit.module("can-memory-store",{
 	}
 });
 
-QUnit.test("updateListData", function(assert) {
-	var items = [{id: 1, foo:"bar"},{id: 2, foo:"bar"},{id: 3, foo:"bar"}];
+// QUnit.test("updateListData", function(assert) {
+// 	var items = [{id: 1, foo:"bar"},{id: 2, foo:"bar"},{id: 3, foo:"bar"}];
+//
+// 	var connection = this.connection;
+//
+// 	var done = assert.async();
+// 	connection.getListData({foo: "bar"})
+// 		.then(function(){
+// 			assert.ok(false, "should have rejected, nothing there");
+// 			done();
+// 		}, function(){
+// 			connection.updateListData({ data: items.slice(0) }, {foo: "bar"})
+// 				.then(function(){
+//
+// 					connection.getListData({foo: "bar"}).then(function(listData){
+//
+// 						assert.deepEqual(listData.data, items);
+//
+// 						done();
+//
+// 					},logErrorAndStart(assert,done));
+//
+// 				}, logErrorAndStart(assert,done));
+//
+// 		});
+//
+// });
 
-	var connection = this.connection;
-
-	var done = assert.async();
-	connection.getListData({foo: "bar"})
-		.then(function(){
-			assert.ok(false, "should have rejected, nothing there");
-			done();
-		}, function(){
-			connection.updateListData({ data: items.slice(0) }, {foo: "bar"})
-				.then(function(){
-
-					connection.getListData({foo: "bar"}).then(function(listData){
-
-						assert.deepEqual(listData.data, items);
-
-						done();
-
-					},logErrorAndStart(assert,done));
-
-				}, logErrorAndStart(assert,done));
-
-		});
-
-});
 
 
-
-QUnit.test("updateData", function(assert) {
-
-	var connection = this.connection;
-
-	var done = assert.async();
-
-	var a1 = connection.updateListData({ data: items.slice(0) }, {foo: "bar"});
-
-	var a2 = connection.updateListData({ data: aItems.slice(0) }, {name: "A"});
-
-	Promise.all([a1, a2]).then(updateItem,logErrorAndStart(assert,done) );
-	function updateItem(){
-		connection.updateData({id: 4, foo:"bar"}).then(checkItems, logErrorAndStart(assert,done));
-	}
-	function checkItems() {
-		connection.getListData({foo: "bar"}).then(function(listData){
-
-			assert.deepEqual(listData.data, items.concat({id: 4, foo:"bar"}), "updateData added item 4");
-
-			updateItem2();
-
-		},logErrorAndStart(assert,done));
-	}
-	function updateItem2(){
-		connection.updateData({id: 4, name:"A"}).then(checkItems2, logErrorAndStart(assert,done));
-	}
-	function checkItems2() {
-		connection.getListData({foo: "bar"}).then(function(listData){
-
-			assert.deepEqual(listData.data, items,"item 4 no longer in foo");
-
-			checkItems3();
-
-		},logErrorAndStart(assert,done));
-	}
-	function checkItems3() {
-		connection.getListData({name: "A"}).then(function(listData){
-
-			assert.deepEqual(listData.data, [{id: 4, name:"A"}].concat(aItems), "id 4 should now have name A");
-
-			done();
-
-		},logErrorAndStart(assert,done));
-	}
-});
-
-QUnit.test("updateData that doesn't exist", function(assert) {
-
-	var connection = this.connection;
-
-	var done = assert.async();
-
-	var a1 = connection.updateListData({ data: items.slice(0) }, {foo: "bar"});
-
-	var a2 = connection.updateListData({ data: aItems.slice(0) }, {name: "A"});
-
-	Promise.all([a1, a2]).then(updateItem,logErrorAndStart(assert,done) );
-	function updateItem(){
-		connection.updateData({id: 4, foo:"bar"}).then(checkItems, logErrorAndStart(assert,done));
-	}
-	function checkItems() {
-		connection.getListData({foo: "bar"}).then(function(listData){
-
-			assert.deepEqual(listData.data, items.concat({id: 4, foo:"bar"}), "updateData added item 4");
-
-			updateItem2();
-
-		},logErrorAndStart(assert,done));
-	}
-	function updateItem2(){
-		connection.updateData({id: 4, name:"A"}).then(checkItems2, logErrorAndStart(assert,done));
-	}
-	function checkItems2() {
-		connection.getListData({foo: "bar"}).then(function(listData){
-
-			assert.deepEqual(listData.data, items,"item 4 no longer in foo");
-
-			checkItems3();
-
-		},logErrorAndStart(assert,done));
-	}
-	function checkItems3() {
-		connection.getListData({name: "A"}).then(function(listData){
-
-			assert.deepEqual(listData.data, [{id: 4, name:"A"}].concat(aItems), "id 4 should now have name A");
-
-			done();
-
-		},logErrorAndStart(assert,done));
-	}
-});
+// QUnit.test("updateData", function(assert) {
+//
+// 	var connection = this.connection;
+//
+// 	var done = assert.async();
+//
+// 	var a1 = connection.updateListData({ data: items.slice(0) }, {foo: "bar"});
+//
+// 	var a2 = connection.updateListData({ data: aItems.slice(0) }, {name: "A"});
+//
+// 	Promise.all([a1, a2]).then(updateItem,logErrorAndStart(assert,done) );
+// 	function updateItem(){
+// 		connection.updateData({id: 4, foo:"bar"}).then(checkItems, logErrorAndStart(assert,done));
+// 	}
+// 	function checkItems() {
+// 		connection.getListData({foo: "bar"}).then(function(listData){
+//
+// 			assert.deepEqual(listData.data, items.concat({id: 4, foo:"bar"}), "updateData added item 4");
+//
+// 			updateItem2();
+//
+// 		},logErrorAndStart(assert,done));
+// 	}
+// 	function updateItem2(){
+// 		connection.updateData({id: 4, name:"A"}).then(checkItems2, logErrorAndStart(assert,done));
+// 	}
+// 	function checkItems2() {
+// 		connection.getListData({foo: "bar"}).then(function(listData){
+//
+// 			assert.deepEqual(listData.data, items,"item 4 no longer in foo");
+//
+// 			checkItems3();
+//
+// 		},logErrorAndStart(assert,done));
+// 	}
+// 	function checkItems3() {
+// 		connection.getListData({name: "A"}).then(function(listData){
+//
+// 			assert.deepEqual(listData.data, [{id: 4, name:"A"}].concat(aItems), "id 4 should now have name A");
+//
+// 			done();
+//
+// 		},logErrorAndStart(assert,done));
+// 	}
+// });
+//
+// QUnit.test("updateData that doesn't exist", function(assert) {
+//
+// 	var connection = this.connection;
+//
+// 	var done = assert.async();
+//
+// 	var a1 = connection.updateListData({ data: items.slice(0) }, {foo: "bar"});
+//
+// 	var a2 = connection.updateListData({ data: aItems.slice(0) }, {name: "A"});
+//
+// 	Promise.all([a1, a2]).then(updateItem,logErrorAndStart(assert,done) );
+// 	function updateItem(){
+// 		connection.updateData({id: 4, foo:"bar"}).then(checkItems, logErrorAndStart(assert,done));
+// 	}
+// 	function checkItems() {
+// 		connection.getListData({foo: "bar"}).then(function(listData){
+//
+// 			assert.deepEqual(listData.data, items.concat({id: 4, foo:"bar"}), "updateData added item 4");
+//
+// 			updateItem2();
+//
+// 		},logErrorAndStart(assert,done));
+// 	}
+// 	function updateItem2(){
+// 		connection.updateData({id: 4, name:"A"}).then(checkItems2, logErrorAndStart(assert,done));
+// 	}
+// 	function checkItems2() {
+// 		connection.getListData({foo: "bar"}).then(function(listData){
+//
+// 			assert.deepEqual(listData.data, items,"item 4 no longer in foo");
+//
+// 			checkItems3();
+//
+// 		},logErrorAndStart(assert,done));
+// 	}
+// 	function checkItems3() {
+// 		connection.getListData({name: "A"}).then(function(listData){
+//
+// 			assert.deepEqual(listData.data, [{id: 4, name:"A"}].concat(aItems), "id 4 should now have name A");
+//
+// 			done();
+//
+// 		},logErrorAndStart(assert,done));
+// 	}
+// });
 
 // QUnit.test("createData", function(assert) {
 //
@@ -193,54 +193,54 @@ QUnit.test("updateData that doesn't exist", function(assert) {
 // 		},logErrorAndStart(assert,done));
 // 	}
 // });
-//
-// QUnit.test("destroyData", function(assert) {
-//
-// 	var connection = this.connection;
-//
-// 	var done = assert.async();
-//
-//
-// 	var a1 = connection.updateListData({ data: items.slice(0) }, {foo: "bar"});
-//
-// 	var a2 = connection.updateListData({ data: aItems.slice(0) }, {name: "A"});
-//
-// 	Promise.all([a1, a2]).then(destroyItem,logErrorAndStart(assert,done) );
-// 	function destroyItem(){
-// 		connection.destroyData({id: 1, foo:"bar"}).then(checkItems, logErrorAndStart(assert,done));
-// 	}
-// 	function checkItems() {
-// 		connection.getListData({foo: "bar"}).then(function(listData){
-//
-// 			assert.deepEqual(listData.data, items.slice(1), "updateData removed 1st item");
-//
-// 			destroyItem2();
-//
-// 		},logErrorAndStart(assert,done));
-// 	}
-// 	function destroyItem2(){
-// 		connection.destroyData({id: 10, name: "A"}).then(checkItems2, logErrorAndStart(assert,done));
-// 	}
-// 	function checkItems2() {
-// 		connection.getListData({foo: "bar"}).then(function(listData){
-//
-// 			assert.deepEqual(listData.data, items.slice(1),"item 4 sill in foo");
-//
-// 			checkItems3();
-//
-// 		},logErrorAndStart(assert,done));
-// 	}
-// 	function checkItems3() {
-// 		connection.getListData({name: "A"}).then(function(listData){
-//
-// 			assert.deepEqual(listData.data, aItems.slice(1) );
-//
-// 			done();
-//
-// 		},logErrorAndStart(assert,done));
-// 	}
-// });
-//
+
+QUnit.test("destroyData", function(assert) {
+
+	var connection = this.connection;
+
+	var done = assert.async();
+
+
+	var a1 = connection.updateListData({ data: items.slice(0) }, {foo: "bar"});
+
+	var a2 = connection.updateListData({ data: aItems.slice(0) }, {name: "A"});
+
+	Promise.all([a1, a2]).then(destroyItem,logErrorAndStart(assert,done) );
+	function destroyItem(){
+		connection.destroyData({id: 1, foo:"bar"}).then(checkItems, logErrorAndStart(assert,done));
+	}
+	function checkItems() {
+		connection.getListData({foo: "bar"}).then(function(listData){
+
+			assert.deepEqual(listData.data, items.slice(1), "updateData removed 1st item");
+
+			destroyItem2();
+
+		},logErrorAndStart(assert,done));
+	}
+	function destroyItem2(){
+		connection.destroyData({id: 10, name: "A"}).then(checkItems2, logErrorAndStart(assert,done));
+	}
+	function checkItems2() {
+		connection.getListData({foo: "bar"}).then(function(listData){
+
+			assert.deepEqual(listData.data, items.slice(1),"item 4 sill in foo");
+
+			checkItems3();
+
+		},logErrorAndStart(assert,done));
+	}
+	function checkItems3() {
+		connection.getListData({name: "A"}).then(function(listData){
+
+			assert.deepEqual(listData.data, aItems.slice(1) );
+
+			done();
+
+		},logErrorAndStart(assert,done));
+	}
+});
+
 // QUnit.test("getData can pull from updateListData", function(assert) {
 // 	var items = [{id: 1, foo:"bar"},{id: 2, foo:"bar"},{id: 3, foo:"bar"}];
 //
@@ -294,26 +294,26 @@ QUnit.test("updateData that doesn't exist", function(assert) {
 //
 // });
 //
-// QUnit.test("respect sort order (#80)", function(assert) {
-// 	var items = [{id: 1, name:"zed"},{id: 2, name:"bar"},{id: 3, name:"foo"}];
-//
-// 	var done = assert.async();
-//
-// 	var connection = memoryStore({
-// 		queryLogic: new canSet.Algebra(canSet.props.sort("sortBy"))
-// 	});
-//
-// 	connection.updateListData({ data: items.slice(0) }, {})
-// 		.then(function(){
-//
-// 		return connection.getListData({sortBy: "name"});
-// 	}).then(function(res){
-// 		assert.deepEqual( res.data,
-// 			[{id: 2, name:"bar"},{id: 3, name:"foo"},{id: 1, name:"zed"}] );
-// 		done();
-// 	});
-//
-// });
+QUnit.test("respect sort order (#80)", function(assert) {
+	var items = [{id: 1, name:"zed"},{id: 2, name:"bar"},{id: 3, name:"foo"}];
+
+	var done = assert.async();
+
+	var connection = memoryStore({
+		queryLogic: new canSet.Algebra(canSet.props.sort("sortBy"))
+	});
+
+	connection.updateListData({ data: items.slice(0) }, {})
+		.then(function(){
+
+		return connection.getListData({sortBy: "name"});
+	}).then(function(res){
+		assert.deepEqual( res.data,
+			[{id: 2, name:"bar"},{id: 3, name:"foo"},{id: 1, name:"zed"}] );
+		done();
+	});
+
+});
 // //
 // QUnit.test("non numeric ids (#79)", function(assert) {
 // 	var items = [{id: "a", name:"zed"},{id: "b", name:"bar"},{id: "c", name:"foo"}];
@@ -335,36 +335,36 @@ QUnit.test("updateData that doesn't exist", function(assert) {
 // 	});
 //
 // });
-//
-// QUnit.test("pagination loses the bigger set (#126)", function(assert) {
-//     var done = assert.async();
-//     var todosAlgebra = new canSet.Algebra(
-// 		canSet.props.offsetLimit("offset","limit")
-// 	);
-//
-//     var connection = memoryStore({
-// 		name: "todos",
-// 		queryLogic: todosAlgebra
-// 	});
-//
-//     connection.updateListData(
-// 		{ data: [{id: 0},{id: 1}] },
-// 		{ offset: 0, limit: 2}).then(function(){
-//
-// 		return connection.updateListData(
-// 			{ data: [{id: 2},{id: 3}] },
-// 			{ offset: 2, limit: 2});
-// 	}).then(function(){
-// 		connection.getListData({ offset: 0, limit: 2}).then(function(listData){
-// 			assert.deepEqual(listData, { data: [{id: 0},{id: 1}], count: 4 });
-// 			done();
-// 		}, function(){
-// 			assert.ok(false, "no data");
-// 			done();
-// 		});
-// 	}).catch(logErrorAndStart(assert,done));
-// });
-//
+
+QUnit.test("pagination loses the bigger set (#126)", function(assert) {
+    var done = assert.async();
+    var todosAlgebra = new canSet.Algebra(
+		canSet.props.offsetLimit("offset","limit")
+	);
+
+    var connection = memoryStore({
+		name: "todos",
+		queryLogic: todosAlgebra
+	});
+
+    connection.updateListData(
+		{ data: [{id: 0},{id: 1}] },
+		{ offset: 0, limit: 2}).then(function(){
+
+		return connection.updateListData(
+			{ data: [{id: 2},{id: 3}] },
+			{ offset: 2, limit: 2});
+	}).then(function(){
+		connection.getListData({ offset: 0, limit: 2}).then(function(listData){
+			assert.deepEqual(listData, { data: [{id: 0},{id: 1}], count: 4 });
+			done();
+		}, function(){
+			assert.ok(false, "no data");
+			done();
+		});
+	}).catch(logErrorAndStart(assert,done));
+});
+
 // QUnit.test("pagination loses the bigger set (#128)", function(assert) {
 //     var done = assert.async();
 //     var todosAlgebra = new canSet.Algebra(
