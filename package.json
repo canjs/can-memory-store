@@ -16,13 +16,14 @@
     "preversion": "npm test",
     "postpublish": "git push --tags && git push",
     "testee": "testee test.html --browsers firefox",
-    "test": "npm run jshint && npm run testee",
+    "test": "npm run detect-cycle && npm run jshint && npm run testee",
     "jshint": "jshint ./*.js --config",
     "release:patch": "npm version patch && npm publish",
     "release:minor": "npm version minor && npm publish",
     "release:major": "npm version major && npm publish",
     "build": "node build.js",
-    "develop": "done-serve --static --develop --port 8080"
+    "develop": "done-serve --static --develop --port 8080",
+    "detect-cycle": "detect-cyclic-packages"
   },
   "main": "can-memory-store",
   "keywords": [
@@ -38,6 +39,7 @@
   },
   "devDependencies": {
     "can-set-legacy": "<2.0.0",
+    "detect-cyclic-packages": "^1.1.1",
     "jshint": "^2.9.1",
     "steal": "^2.2.1",
     "steal-qunit": "^2.0.0",
