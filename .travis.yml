@@ -7,6 +7,6 @@ addons:
     packages:
       - "dbus-x11"
 services:
-  - xvfb
+  - Xvfb
 before_script:
-  - "export DISPLAY=:0.0 xvfb-run --auto-servernum --server-num=0 nohup java - jar X.jar"
+  - "export DISPLAY=:0.0"
