@@ -314,7 +314,7 @@ QUnit.test("updateData that doesn't exist", function(assert) {
 // 	});
 //
 // });
-//
+// //
 // QUnit.test("non numeric ids (#79)", function(assert) {
 // 	var items = [{id: "a", name:"zed"},{id: "b", name:"bar"},{id: "c", name:"foo"}];
 //
@@ -389,7 +389,7 @@ QUnit.test("updateData that doesn't exist", function(assert) {
 // 		done();
 // 	});
 // });
-//
+
 // QUnit.test("should not mutate data passed from the outside", function(assert) {
 // 	var done = assert.async();
 // 	var connection = this.connection;
@@ -424,44 +424,44 @@ QUnit.test("updateData that doesn't exist", function(assert) {
 // 		assert.ok(false, error);
 // 	});
 // });
-//
-// QUnit.test("count is right with filtering", function(assert) {
-// 	var done = assert.async();
-// 	var connection =  memoryStore({
-// 		queryLogic: new QueryLogic({})
-// 	});
-// 	connection.clear();
-//
-// 	assert.expect(1);
-//
-// 	var items = [
-// 		{ "id": 1, role: "a" },
-// 		{ "id": 2, role: "b" },
-// 		{ "id": 3, role: "a" },
-// 		{ "id": 4, role: "b" },
-// 		{ "id": 5, role: "a" },
-// 		{ "id": 6, role: "b" }
-// 	];
-//
-// 	connection.updateListData({ data: items }, {})
-// 	.then(function() {
-// 		return connection.getListData({
-// 			filter: {role: "a"},
-// 			page: {start: 0, end: 1}
-// 		});
-// 	})
-// 	.then(function(result) {
-// 		assert.deepEqual(result, {
-// 			data: [{ "id": 1, role: "a" },{ "id": 3, role: "a" }],
-// 			count: 3
-// 		});
-// 		done();
-// 	})
-// 	.then(null, function(error) {
-// 		assert.ok(false, error);
-// 	});
-// });
-//
+
+QUnit.test("count is right with filtering", function(assert) {
+	var done = assert.async();
+	var connection =  memoryStore({
+		queryLogic: new QueryLogic({})
+	});
+	connection.clear();
+
+	assert.expect(1);
+
+	var items = [
+		{ "id": 1, role: "a" },
+		{ "id": 2, role: "b" },
+		{ "id": 3, role: "a" },
+		{ "id": 4, role: "b" },
+		{ "id": 5, role: "a" },
+		{ "id": 6, role: "b" }
+	];
+
+	connection.updateListData({ data: items }, {})
+	.then(function() {
+		return connection.getListData({
+			filter: {role: "a"},
+			page: {start: 0, end: 1}
+		});
+	})
+	.then(function(result) {
+		assert.deepEqual(result, {
+			data: [{ "id": 1, role: "a" },{ "id": 3, role: "a" }],
+			count: 3
+		});
+		done();
+	})
+	.then(null, function(error) {
+		assert.ok(false, error);
+	});
+});
+
 // QUnit.test("will union paginated records", function(assert) {
 // 	var connection =  memoryStore({
 // 		queryLogic: new QueryLogic({})
