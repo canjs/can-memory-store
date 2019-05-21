@@ -1,6 +1,11 @@
 language: node_js
 node_js: node
-services:
-  - xvfb
 addons:
-  firefox: "66.0"
+  firefox: "latest-esr"
+  # Install D-Bus here
+  apt:
+    packages:
+      - "dbus-x11"
+before_install:
+  - "export DISPLAY=:99.0"
+  - "sh -e /etc/init.d/xvfb start"
