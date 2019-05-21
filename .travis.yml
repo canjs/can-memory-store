@@ -1,10 +1,6 @@
 language: node_js
 node_js: node
-addons:
-  firefox: "latest-esr"
-  # Install D-Bus here
-  apt:
-    packages:
-      - "dbus-x11"
 services:
   - xvfb
+addons:
+  firefox: '51.0'
