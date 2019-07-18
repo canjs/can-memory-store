@@ -538,5 +538,24 @@ QUnit.test("create, update, destroy all return saved data", function(assert) {
 	});
 });
 
+QUnit.test("Does not do subset comparisons when the superset is the universe", function(assert) {
+	var queryLogic = new QueryLogic({});
+	queryLogic.isSubset = function() {
+		throw new Error("CANNOT COMPARE");
+	};
+
+	var store =  memoryStore({
+		queryLogic: queryLogic
+	});
+	store.updateQueryDataSync([{ query: {}, startIdentity: "123" }]);
+
+	try {
+		store.getListDataSync({ filter: {a: "b"} });
+		assert.ok(true, "Able to getListData with a universal superset");
+	} catch(e) {
+		assert.ok(false, e);
+	}
+});
+
 
 // TODO: make sure we get the right count
