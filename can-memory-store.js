@@ -11,7 +11,7 @@ module.exports = namespace.memoryStore = function memoryStore(baseConnection){
     canReflect.assignMap(behavior, {
 		clear: function(){
 			this._instances = {};
-			this._queries = [];
+			this._queryData = [];
 		},
 		_queryData: [],
 		updateQueryDataSync: function(queries){

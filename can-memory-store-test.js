@@ -25,6 +25,10 @@ QUnit.module("can-memory-store",{
 	}
 });
 
+QUnit.test("list is empty after connection clear", function(assert) {
+	assert.equal(this.connection._queryData.length, 0, "query data is cleared");
+});
+
 QUnit.test("updateListData", function(assert) {
 	var items = [{id: 1, foo:"bar"},{id: 2, foo:"bar"},{id: 3, foo:"bar"}];
 
