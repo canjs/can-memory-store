@@ -1,6 +1,5 @@
 var canReflect = require("can-reflect");
 
-
 function getItems(data){
 	if(Array.isArray(data)) {
 		return data;
@@ -80,7 +79,8 @@ function makeSimpleStore(baseConnection) {
 
 			for(var i = 0; i < queryData.length; i++) {
         		var checkSet = queryData[i].query;
-        		if( this.queryLogic.isSubset(query, checkSet) ) {
+				if( this.queryLogic.isEqual(checkSet, {}) ||
+					this.queryLogic.isSubset(query, checkSet) ) {
 					superSetQueryData = queryData[i];
         		}
         	}
